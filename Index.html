@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Electricity Bill</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+
+<div class="box" id="billArea">
+
+    <!-- Header Section -->
+    <div class="header">
+        <img src="https://png.pngtree.com/png-clipart/20230923/original/pngtree-lightbulb-house-electricity-bill-icon-with-yellow-glowing-lighting-utilities-vector-png-image_12578915.png">
+        <h3>Electricity Board</h3>
+    </div>
+
+    <h2>Electricity Bill</h2>
+
+    <!-- Input Fields -->
+    <input type="text" id="name" placeholder="Customer Name"><br>
+    <input type="text" id="cid" placeholder="Customer ID"><br>
+    <input type="date" id="date"><br>
+    <input type="number" id="units" placeholder="Units Consumed"><br>
+
+    <!-- Buttons -->
+    <button class="btn" onclick="generateBill()">Generate Bill</button>
+    <button class="print-btn" onclick="printBill()">Print</button>
+
+    <!-- Output Area -->
+    <div id="output"></div>
+
+</div>
+
+<script>
+
+function generateBill() {
+
+    // 🔹 Get user input
+    let customerName = document.getElementById("name").value;
+    let customerId = document.getElementById("cid").value;
+    let billDate = document.getElementById("date").value;
+    let unitInput = document.getElementById("units").value;
+
+    // 🔹 Validation (check empty fields)
+    if (customerName === "" || customerId === "" || billDate === "" || unitInput === "") {
+        document.getElementById("output").innerHTML = "⚠️ Please fill all fields!";
+        return;
+    }
+
+    // 🔹 Generate Bill Number
+    let billNumber = "EB" + Math.floor(100000 + Math.random() * 900000);
+
+    // 🔹 Convert units to number
+    let units = parseFloat(unitInput);
+
+    let totalBill = 0;
+    let tableRows = "";
+
+    // 🔹 Slab Calculation
+    if (units <= 100) {
+        totalBill = units * 1.5;
+
+        tableRows += `<tr>
+            <td>0-100</td>
+            <td>${units}</td>
+            <td>1.5</td>
+            <td>${totalBill}</td>
+        </tr>`;
+    } 
+
+    else if (units <= 200) {
+        totalBill = 150 + (units - 100) * 2.5;
+
+        tableRows += `<tr><td>0-100</td><td>100</td><td>1.5</td><td>150</td></tr>`;
+        tableRows += `<tr><td>101-200</td><td>${units - 100}</td><td>2.5</td><td>${(units - 100) * 2.5}</td></tr>`;
+    } 
+
+    else if (units <= 300) {
+        totalBill = 150 + 250 + (units - 200) * 4;
+
+        tableRows += `<tr><td>0-100</td><td>100</td><td>1.5</td><td>150</td></tr>`;
+        tableRows += `<tr><td>101-200</td><td>100</td><td>2.5</td><td>250</td></tr>`;
+        tableRows += `<tr><td>201-300</td><td>${units - 200}</td><td>4</td><td>${(units - 200) * 4}</td></tr>`;
+    } 
+
+    else {
+        totalBill = 150 + 250 + 400 + (units - 300) * 6;
+
+        tableRows += `<tr><td>0-100</td><td>100</td><td>1.5</td><td>150</td></tr>`;
+        tableRows += `<tr><td>101-200</td><td>100</td><td>2.5</td><td>250</td></tr>`;
+        tableRows += `<tr><td>201-300</td><td>100</td><td>4</td><td>400</td></tr>`;
+        tableRows += `<tr><td>300+</td><td>${units - 300}</td><td>6</td><td>${(units - 300) * 6}</td></tr>`;
+    }
+
+    // 🔹 Final Output (Bill Display)
+    let billHTML = `
+        <div class="info">
+            <p><b>Bill No:</b> ${billNumber}</p>
+            <p><b>Name:</b> ${customerName}</p>
+            <p><b>Customer ID:</b> ${customerId}</p>
+            <p><b>Date:</b> ${billDate}</p>
+            <p><b>Units:</b> ${units}</p>
+        </div>
+
+        <table>
+            <tr>
+                <th>Slab</th>
+                <th>Units</th>
+                <th>Rate</th>
+                <th>Amount</th>
+            </tr>
+            ${tableRows}
+            <tr>
+                <th colspan="3">Total</th>
+                <th>${totalBill}</th>
+            </tr>
+        </table>
+    `;
+
+    document.getElementById("output").innerHTML = billHTML;
+}
+
+// 🔹 Print Function
+function printBill() {
+    window.print();
+}
+
+</script>
+
+</body>
+</html>
